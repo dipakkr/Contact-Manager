@@ -11,6 +11,9 @@ connectDB();
 const app = express();
 const PORT = 3000;
 
+//Middleware
+app.use(express.json({ extended: false }));
+
 app.get("/", (req, res) => {
   res.send("API WORKING");
 });

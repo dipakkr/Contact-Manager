@@ -1,3 +1,4 @@
 {
-  "mongoURI": "mongodb://dktest:a1234567@ds243607.mlab.com:43607/contact-manager"
+  "mongoURI": "mongodb://dktest:a1234567@ds243607.mlab.com:43607/contact-manager",
+  "jwtSecret": "secret"
 }

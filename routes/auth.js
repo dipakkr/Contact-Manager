@@ -3,9 +3,7 @@ const { check, validationResult } = require("express-validator/check");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const auth = require("../middleware/auth");
-
 const User = require("../models/User");
-
 const router = express.Router();
 
 // @POST - /api/auth/
@@ -19,18 +17,16 @@ router.post(
   ],
   async (req, res) => {
     const errors = validationResult(req);
+
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { email, password } = req.body;
 
+    const { email, password } = req.body;
     try {
       let user = await User.findOne({ email });
-
       if (!user) return res.status(400).json({ message: "User Not Exist" });
-
       const isMatch = await bcrypt.compare(password, user.password);
-
       if (!isMatch) return res.status(400).send("Invalid");
 
       const payload = {
@@ -53,8 +49,15 @@ router.post(
 // @GET - /api/auth/
 // @access - Private
 // @desc - Get Logged In User
-router.get("/", auth, (req, res) => {
-  res.send("Get Logged In Users");
+
+router.get("/", auth, async (req, res) => {
+  try {
+    // request.user is getting fetched from Middleware after token authentication
+    const user = await User.findById(req.user.id);
+    res.json(user);
+  } catch (e) {
+    res.send({ message: "Error in Fetching user" });
+  }
 });
 
 module.exports = router;

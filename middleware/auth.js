@@ -3,7 +3,6 @@ const config = require("config");
 
 module.exports = function(req, res, next) {
   const token = req.header("x-auth-token");
-
   if (!token) return res.status(401).json({ message: "Not Authorised" });
 
   try {
@@ -12,6 +11,6 @@ module.exports = function(req, res, next) {
     next();
   } catch (e) {
     console.error(e);
-    res.status(500).send("Token is not valid");
+    res.status(500).send({ message: "Invalid Token" });
   }
 };

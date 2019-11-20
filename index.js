@@ -9,7 +9,7 @@ connectDB();
 
 //App
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 //Middleware
 app.use(express.json({ extended: false }));

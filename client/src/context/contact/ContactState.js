@@ -10,7 +10,8 @@ import {
   CLEAR_CONTACTS,
   UPDATE_CONTACT,
   FILTER_CONTACTS,
-  CLEAR_FILTER
+  CLEAR_FILTER,
+  CLEAR_CURRENT
 } from "../types";
 
 const ContactState = props => {
@@ -44,13 +45,50 @@ const ContactState = props => {
         phone: "336644",
         type: "Home"
       }
-    ]
+    ],
+    current: null
   };
 
   const [state, dispatch] = useReducer(contactReducer, initialState);
 
+  // Add Contact
+  const addContact = contact => {
+    contact.id = uuid.v4();
+    dispatch({ type: ADD_CONTACT, payload: contact });
+  };
+
+  // Delete Contact
+  const deleteContact = id => {
+    dispatch({ type: DELETE_CONTACT, payload: id });
+  };
+
+  // Set Current Contact
+  const setCurrentContact = contact => {
+    dispatch({ type: SET_CURRENT, payload: contact });
+  };
+
+  // Clear Current Contact
+  const clearCurrentContact = () => {
+    dispatch({ type: CLEAR_CURRENT });
+  };
+
+  // Update Contact
+
+  // Filter Contact
+
+  // Clear Filter
+
   return (
-    <ContactContext.Provider value={{ contacts: state.contacts }}>
+    <ContactContext.Provider
+      value={{
+        contacts: state.contacts,
+        current: state.current,
+        addContact,
+        deleteContact,
+        setCurrentContact,
+        clearCurrentContact
+      }}
+    >
       {props.children}
     </ContactContext.Provider>
   );

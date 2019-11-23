@@ -14,8 +14,10 @@ import {
   LOGIN_SUCCESS,
   AUTH_ERROR,
   CLEAR_ERRORS,
-  CLEAR_CONTACTS
+  CLEAR_CONTACTS,
+  LOGOUT
 } from "../types";
+import { stat } from "fs";
 
 const AuthState = props => {
   const initialState = {
@@ -28,7 +30,7 @@ const AuthState = props => {
 
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Load User
+  // LOAD USER
   const loadUser = async () => {
     // Load token to global headers
     if (localStorage.token) {
@@ -43,7 +45,7 @@ const AuthState = props => {
     }
   };
 
-  // Register User
+  // REGISTER USER
   const register = async formData => {
     const config = {
       headers: {
@@ -73,14 +75,36 @@ const AuthState = props => {
     }
   };
 
-  // Login User
-  const login = () => {
-    console.login("Login Function");
+  // LOGIN USER
+  const login = async formData => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth",
+        formData,
+        config
+      );
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: response.data
+      });
+      loadUser();
+    } catch (err) {
+      dispatch({
+        type: LOGIN_FAIL,
+        payload: err.response.data
+      });
+    }
   };
 
   // Logout User
   const logout = () => {
-    console.login("Logout Function");
+    dispatch({ type: LOGOUT });
   };
 
   // Clear errors
@@ -95,6 +119,7 @@ const AuthState = props => {
         isAuthenticated: state.isAuthenticated,
         loading: state.loading,
         error: state.error,
+        user: state.user,
         login,
         logout,
         register,

@@ -1,12 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import AlertContext from "../../context/alert/alertContext";
+import AuthContext from "../../context/auth/authContext";
 
-const Login = () => {
+const Login = props => {
   const [user, setUser] = useState({
     email: "",
     password: ""
   });
 
   const { email, password } = user;
+
+  const alertContext = useContext(AlertContext);
+  const authContext = useContext(AuthContext);
+  const { setAlert } = alertContext;
+  const { login, isAuthenticated, error, clearErrors } = authContext;
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      props.history.push("/");
+    }
+
+    console.log(error);
+  }, [isAuthenticated, error, props.history]);
 
   const onChange = e => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -15,7 +30,14 @@ const Login = () => {
   const onSubmit = e => {
     e.preventDefault();
     // Fire the Login context function
-    console.log("Login Submit");
+    if (email === "" || password === "") {
+      setAlert("Email and Password are mandatory*");
+    } else {
+      login({
+        email,
+        password
+      });
+    }
   };
 
   return (

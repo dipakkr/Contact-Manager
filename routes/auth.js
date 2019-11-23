@@ -26,8 +26,10 @@ router.post(
     try {
       let user = await User.findOne({ email });
       if (!user) return res.status(400).json({ message: "User Not Exist" });
+
       const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) return res.status(400).send("Invalid");
+      if (!isMatch)
+        return res.status(400).json({ message: "Incorrect Password !" });
 
       const payload = {
         user: {
@@ -41,7 +43,7 @@ router.post(
       });
     } catch (e) {
       console.error(e);
-      res.status(500).send("Server Error");
+      res.status(500).json({ message: "Server Error" });
     }
   }
 );

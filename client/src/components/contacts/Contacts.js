@@ -5,7 +5,6 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 const Contacts = () => {
   const contactContext = useContext(ContactContext);
-
   //Getting Contacts from ContactContext
   const { contacts } = contactContext;
 

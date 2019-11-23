@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 // @GET - /api/users
-// @desc - User SignUp
+// @desc - User SignUp ( REGISTRATION )
 router.post(
   "/",
   [
@@ -35,6 +35,8 @@ router.post(
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
 
+      await user.save();
+
       const payload = {
         user: {
           id: user.id
@@ -46,11 +48,9 @@ router.post(
         res.status(200).json({ token });
       });
 
-      await user.save();
-
       //hashing password
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
       res.status(500).send("Error in Saving");
     }
   }

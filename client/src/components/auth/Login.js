@@ -3,10 +3,10 @@ import React, { useState } from "react";
 const Login = () => {
   const [user, setUser] = useState({
     email: "",
-    pass: ""
+    password: ""
   });
 
-  const { email, pass } = user;
+  const { email, password } = user;
 
   const onChange = e => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -32,10 +32,10 @@ const Login = () => {
           onChange={onChange}
         />
         <input
-          name="pass"
+          name="password"
           placeholder="Password"
           type="text"
-          value={pass}
+          value={password}
           onChange={onChange}
         />
 

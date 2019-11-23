@@ -1,19 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AlertContext from "../../context/alert/alertContext";
+import AuthContext from "../../context/auth/authContext";
 
-const Register = () => {
-  const alertContext = React.useContext(AlertContext);
-
+const Register = props => {
+  const alertContext = useContext(AlertContext);
+  const authContext = useContext(AuthContext);
   const { setAlert } = alertContext;
+  const { register, isAuthenticated, error, clearErrors } = authContext;
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      props.history.push("/");
+    }
+
+    console.log(error);
+    if (error === "User Already Exists") {
+      setAlert(error, "danger");
+    }
+
+    // eslint-disable-next-line
+  }, [error, isAuthenticated, props.history]);
 
   const [user, setUser] = useState({
     name: "",
     email: "",
-    pass: "",
-    pass2: ""
+    password: "",
+    password2: ""
   });
 
-  const { name, email, pass, pass2 } = user;
+  const { name, email, password, password2 } = user;
 
   const onChange = e => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -23,12 +38,17 @@ const Register = () => {
     e.preventDefault();
     // Fire the context function
 
-    if (name === "" || email === "" || pass === "") {
+    if (name === "" || email === "" || password === "") {
       setAlert("Please fill the information", "danger");
-    } else if (pass !== pass2) {
+    } else if (password !== password2) {
       setAlert("Password doesn't match", "danger");
     } else {
       console.log("Register Submit");
+      register({
+        name,
+        email,
+        password
+      });
     }
   };
 
@@ -56,19 +76,19 @@ const Register = () => {
           required
         />
         <input
-          name="pass"
+          name="password"
           placeholder="Password"
           type="text"
-          value={pass}
+          value={password}
           onChange={onChange}
           required
           minLength="6"
         />
         <input
-          name="pass2"
+          name="password2"
           placeholder="Cofirm Password"
           type="text"
-          value={pass2}
+          value={password2}
           onChange={onChange}
           required
           minLength="6"
